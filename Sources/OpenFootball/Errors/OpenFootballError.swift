@@ -19,6 +19,7 @@ public enum OpenFootballError: Error, LocalizedError, Sendable, Equatable {
     /// A table was asked for where one has no meaning.
     case noTable(String)
 
+    /// A one-line reason, for a CLI or a log.
     public var errorDescription: String? {
         switch self {
         case .noDataset(let competition, let season):

@@ -21,6 +21,8 @@
 //  than a stated convention.
 //
 
+//
+
 import Foundation
 
 /// Builds a table out of played matches.
@@ -30,6 +32,7 @@ public enum Table {
     /// seasons in the archive used two, so this is a parameter, not a magic
     /// number buried in the loop.
     public static let pointsForWin = 3
+    /// One point for a draw, in every era this dataset covers.
     public static let pointsForDraw = 1
 
     /// The table after every played match, leader first.
@@ -65,44 +68,5 @@ public enum Table {
             goalsAgainst += conceded
             if scored > conceded { won += 1 } else if scored == conceded { drawn += 1 } else { lost += 1 }
         }
-    }
-}
-
-/// One row of a computed table.
-public struct TableRow: Sendable, Codable, Equatable {
-    /// Where the club sits, 1-based. Filled in once the table is ordered.
-    public internal(set) var position: Int = 0
-    public let team: String
-    public let played: Int
-    public let won: Int
-    public let drawn: Int
-    public let lost: Int
-    public let goalsFor: Int
-    public let goalsAgainst: Int
-    public let points: Int
-
-    /// Goals scored minus conceded.
-    public var goalDifference: Int { goalsFor - goalsAgainst }
-
-    init(team: String, tally: Table.Tally, pointsForWin: Int) {
-        self.team = team
-        self.won = tally.won
-        self.drawn = tally.drawn
-        self.lost = tally.lost
-        self.played = tally.won + tally.drawn + tally.lost
-        self.goalsFor = tally.goalsFor
-        self.goalsAgainst = tally.goalsAgainst
-        self.points = tally.won * pointsForWin + tally.drawn * Table.pointsForDraw
-    }
-
-    /// Points, then goal difference, then goals scored, then name.
-    ///
-    /// The name is the last key only to make the output deterministic — see
-    /// the note in ``Table``.
-    static func standardOrder(_ lhs: TableRow, _ rhs: TableRow) -> Bool {
-        if lhs.points != rhs.points { return lhs.points > rhs.points }
-        if lhs.goalDifference != rhs.goalDifference { return lhs.goalDifference > rhs.goalDifference }
-        if lhs.goalsFor != rhs.goalsFor { return lhs.goalsFor > rhs.goalsFor }
-        return lhs.team < rhs.team
     }
 }

@@ -17,6 +17,7 @@ extension Match {
         case homeHalfTimeGoals, awayHalfTimeGoals, isPlayed, winner
     }
 
+    /// Writes the flattened shape, not the one the dataset stores.
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: OutputKeys.self)
         try container.encodeIfPresent(round, forKey: .round)

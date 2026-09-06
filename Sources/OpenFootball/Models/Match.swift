@@ -5,6 +5,8 @@
 //  Created by David Sherlock on 2026.
 //
 
+//
+
 import Foundation
 
 /// One fixture, played or not.
@@ -15,13 +17,17 @@ public struct Match: Sendable, Codable, Equatable {
     public let date: String?
     /// `20:00`, when known.
     public let time: String?
+    /// The home club, as the dataset spells it.
     public let home: String
+    /// The away club, as the dataset spells it.
     public let away: String
     /// Goals at full time, when the match has been played.
     public let homeGoals: Int?
+    /// Goals the away side scored. Absent for a match not yet played.
     public let awayGoals: Int?
     /// Goals at half time, where the dataset records them.
     public let homeHalfTimeGoals: Int?
+    /// Away goals at half time, where the dataset records them.
     public let awayHalfTimeGoals: Int?
 
     /// Whether the match has a result.
@@ -84,30 +90,5 @@ public struct Match: Sendable, Codable, Equatable {
               goals.count == 2
         else { return nil }
         return (goals[0], goals[1])
-    }
-}
-
-/// A published season of a competition.
-public struct SeasonData: Sendable, Codable, Equatable {
-    /// The dataset's own name — "English Premier League 2025/26".
-    public let name: String
-    public let matches: [Match]
-
-    private enum CodingKeys: String, CodingKey { case name, matches }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.name = (try? container.decode(String.self, forKey: .name)) ?? ""
-        self.matches = (try? container.decode([Match].self, forKey: .matches)) ?? []
-    }
-
-    public init(name: String, matches: [Match]) {
-        self.name = name
-        self.matches = matches
-    }
-
-    /// Every club appearing in the fixture list.
-    public var teams: [String] {
-        Array(Set(matches.flatMap { [$0.home, $0.away] })).sorted()
     }
 }
