@@ -27,7 +27,7 @@ you get all twenty rows, correct.
 
 ## Coverage
 
-| | |
+| Region | Competitions |
 |---|---|
 | England | Premier League, Championship, League One, League Two |
 | Scotland | Premiership |
